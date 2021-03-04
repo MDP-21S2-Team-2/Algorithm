@@ -34,16 +34,24 @@ public class FastestPath {
         boolean isStartGrid = true;
         FastestPath.PriorityLinkedList priorityList = new FastestPath.PriorityLinkedList();
         LinkedList pathList = new LinkedList();
-        startGrid.setPathParent((GridBox)null);
+        //startGrid.setPathParent((GridBox)null);
+        if (startGrid.getPathParent() != null)
         startGrid.setCostAccumulatedFromStart(0.0F);
         startGrid.setCostEstimatedToGoal(startGrid.estimateCostToGrid(endGrid));
         priorityList.add(startGrid);
 
         while(!priorityList.isEmpty()) {
             GridBox grid = (GridBox)priorityList.removeFirst();
-            isStartGrid = grid == startGrid;
+            isStartGrid = (grid == startGrid);
             if (grid.getPathParent() == null) {
                 grid.setRobotFacingDirection(Direction.NORTH);
+                System.out.println(grid.getRobotFacingDirection());
+            }
+            else if (isStartGrid){
+                grid.setRobotFacingDirection();
+                System.out.println(grid.getRobotFacingDirection());
+                startGrid.setPathParent(null);
+                grid.setPathParent(null);
             }
 
             if (grid == endGrid) {

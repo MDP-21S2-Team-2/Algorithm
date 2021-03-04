@@ -70,22 +70,22 @@ public class GridBox implements Comparable {
         this.setRobotFacingDirection();
         return (((this.compareX(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.EAST) ||
                 (this.compareX(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.WEST) ||
-                (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.SOUTH) ||
-                (this.compareY(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.NORTH)) && !isStartGrid) ? 100F : 200F;
+                (this.compareY(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.SOUTH) ||
+                (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.NORTH))) ? 50F : 3000F;
     }
 
     public void setRobotFacingDirection() {
         if (this.pathParent == null) {
-            this.robotFacingDirection = Direction.NORTH;
+            //this.robotFacingDirection = Direction.NORTH;
         } else {
             if (this.compareX(this.pathParent) == 1) {
                 this.robotFacingDirection = Direction.WEST;
             } else if (this.compareX(this.pathParent) == -1) {
                 this.robotFacingDirection = Direction.EAST;
             } else if (this.compareY(this.pathParent) == 1) {
-                this.robotFacingDirection = Direction.NORTH;
-            } else if (this.compareY(this.pathParent) == -1) {
                 this.robotFacingDirection = Direction.SOUTH;
+            } else if (this.compareY(this.pathParent) == -1) {
+                this.robotFacingDirection = Direction.NORTH;
             }
 
         }

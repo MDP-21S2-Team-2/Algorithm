@@ -60,8 +60,8 @@ public class SimulatorGUI {
     public JButton reset;
     public int timeLimit = 300;
     public int coverageLimit = 300;
-    public static int _waypointX = 6;
-    public static int _waypointY = 18;
+    public static int _waypointX = 1;
+    public static int _waypointY = 5;
     public String p1_;
     public String p2_ = "0000000000000000000000000000000000000000000000000000000000000000000000000000";
 
@@ -199,7 +199,12 @@ public class SimulatorGUI {
         createArena.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 p1_ = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-                p2_ = "01C0000000000000001F0000000000000007E000000000001F83C00400000000000000000000";
+                //p2_ = "01000000000000F00000000000400007E0000000000000001F80000780000000000004000800"; //Arena 1
+                //p2_ = "000000000000010042038400000000000000030C000000000000021F84000800000000000400"; //Arena 2
+                p2_ = "0000000000000400080010C000F0000000000000007E00FC0000000180000100020004000800"; //Arena 3
+                //p2_ = "00400080010000000000003F000000000000400100040F000000000380000000080010002000"; // Arena 4
+                //p2_ = "0700000000000001C00002000400080010202040408001000200040000380000000020004200"; // Arena 5
+                //p2_ = "01C0000000000000001F0000000000000007E000000000001F83C00400000000000000000000"; //Shared Arena
                 createArenaHex(p1_, p2_, arenaView);
                 arenaView.calculateSpaceClearance();
                 arenaView.repaint();
