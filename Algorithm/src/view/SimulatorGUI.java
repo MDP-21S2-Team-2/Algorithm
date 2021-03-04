@@ -60,8 +60,8 @@ public class SimulatorGUI {
     public JButton reset;
     public int timeLimit = 300;
     public int coverageLimit = 300;
-    public static int _waypointX = 1;
-    public static int _waypointY = 5;
+    public static int _waypointX = 2;
+    public static int _waypointY = 9;
     public String p1_;
     public String p2_ = "0000000000000000000000000000000000000000000000000000000000000000000000000000";
 
@@ -151,21 +151,21 @@ public class SimulatorGUI {
         realRunCheck.setHorizontalTextPosition(SwingConstants.LEFT);
         loadMap = new JButton(("Load Map"));
         createArena = new JButton("Create Arena");
-        addingwaypoint = new JLabel("Add WayPoint (x,y):");
-        timeLimited = new JButton("Time Limited");
-        coverageLimited = new JButton("Coverage Limited");
+        //addingwaypoint = new JLabel("Add WayPoint (x,y):");
+        //timeLimited = new JButton("Time Limited");
+        //coverageLimited = new JButton("Coverage Limited");
         explorationButton = new JButton("Exploration");
         reset = new JButton("Reset");
 
         //waypoint
-        wayX = new JLabel("X",JLabel.LEFT);
-        wayY = new JLabel("Y",JLabel.LEFT);
-        JSpinner spinnerX = new JSpinner(new SpinnerNumberModel(1, 0, 14, 1));
-        JSpinner spinnerY = new JSpinner(new SpinnerNumberModel(17, 0, 19, 1));
+//        wayX = new JLabel("X",JLabel.LEFT);
+//        wayY = new JLabel("Y",JLabel.LEFT);
+//        JSpinner spinnerX = new JSpinner(new SpinnerNumberModel(1, 0, 14, 1));
+//        JSpinner spinnerY = new JSpinner(new SpinnerNumberModel(17, 0, 19, 1));
 
         //stopwatch
-        JLabel time = new JLabel("Stopwatch:");
-        timer = new JLabel("00:00");
+//        JLabel time = new JLabel("Stopwatch:");
+//        timer = new JLabel("00:00");
 
         //Loading Map from disk
         loadMap.addMouseListener(new MouseAdapter() {
@@ -422,72 +422,72 @@ public class SimulatorGUI {
 
 
         //Time Exploration Button
-        timeLimited.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                //Getting simulation value
-                simulation = realRunCheck.isSelected();
-                JDialog timeExploDialog = new JDialog(frame, "Time-Limited Exploration", true);
-                timeExploDialog.setSize(400, 60);
-                timeExploDialog.setLayout(new FlowLayout());
-                final JTextField timeTF = new JTextField(5);
-                JButton timeSaveButton = new JButton("Run");
-
-                timeSaveButton.addMouseListener(new MouseAdapter() {
-                    public void mousePressed(MouseEvent e) {
-                        timeExploDialog.setVisible(false);
-                        String time = timeTF.getText();
-                        String[] timeArr = time.split(":");
-                        timeLimit = (Integer.parseInt(timeArr[0]) * 60) + Integer.parseInt(timeArr[1]);
-                        new ExplorationSimulator().execute();
-                    }
-                });
-                timeExploDialog.add(new JLabel("Time Limit (in MM:SS): "));
-                timeExploDialog.add(timeTF);
-                timeExploDialog.add(timeSaveButton);
-                timeExploDialog.setVisible(true);
-            }
-        });
+//        timeLimited.addMouseListener(new MouseAdapter() {
+//            public void mousePressed(MouseEvent e) {
+//                //Getting simulation value
+//                simulation = realRunCheck.isSelected();
+//                JDialog timeExploDialog = new JDialog(frame, "Time-Limited Exploration", true);
+//                timeExploDialog.setSize(400, 60);
+//                timeExploDialog.setLayout(new FlowLayout());
+//                final JTextField timeTF = new JTextField(5);
+//                JButton timeSaveButton = new JButton("Run");
+//
+//                timeSaveButton.addMouseListener(new MouseAdapter() {
+//                    public void mousePressed(MouseEvent e) {
+//                        timeExploDialog.setVisible(false);
+//                        String time = timeTF.getText();
+//                        String[] timeArr = time.split(":");
+//                        timeLimit = (Integer.parseInt(timeArr[0]) * 60) + Integer.parseInt(timeArr[1]);
+//                        new ExplorationSimulator().execute();
+//                    }
+//                });
+//                timeExploDialog.add(new JLabel("Time Limit (in MM:SS): "));
+//                timeExploDialog.add(timeTF);
+//                timeExploDialog.add(timeSaveButton);
+//                timeExploDialog.setVisible(true);
+//            }
+//        });
 
         //Coverage Exploration Button
-        coverageLimited.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                //Getting simulation value
-                simulation = realRunCheck.isSelected();
-
-                JDialog coverageExploDialog = new JDialog(frame, "Coverage-Limited Exploration", true);
-                coverageExploDialog.setSize(400, 60);
-                coverageExploDialog.setLayout(new FlowLayout());
-                final JTextField coverageTF = new JTextField(5);
-                JButton coverageSaveButton = new JButton("Run");
-
-                coverageSaveButton.addMouseListener(new MouseAdapter() {
-                    public void mousePressed(MouseEvent e) {
-                        coverageExploDialog.setVisible(false);
-                        int coveragePercent = (Integer.parseInt(coverageTF.getText()));
-                        coverageLimit = (int) ((coveragePercent) * 300 / 100.0);
-                        if (coveragePercent>100 || coveragePercent<0){
-                            JDialog errorDialog = new JDialog(frame,"Error");
-                            errorDialog.setSize(400, 60);
-                            JLabel errorMsg = new JLabel("Coverage Limit is not within range (0-100)");
-                            errorDialog.add(errorMsg);
-                            errorDialog.setVisible(true);
-                        }
-                        else{
-                            new ExplorationSimulator().execute();
-
-                        }
-                        //CardLayout cl = ((CardLayout) arenaPanel.getLayout());
-                        //cl.show(arenaPanel, "EXPLORATION");
-                        //new ExplorationSimulator().execute();
-                    }
-                });
-
-                coverageExploDialog.add(new JLabel("Coverage Limit (% of maze): "));
-                coverageExploDialog.add(coverageTF);
-                coverageExploDialog.add(coverageSaveButton);
-                coverageExploDialog.setVisible(true);
-            }
-        });
+//        coverageLimited.addMouseListener(new MouseAdapter() {
+//            public void mousePressed(MouseEvent e) {
+//                //Getting simulation value
+//                simulation = realRunCheck.isSelected();
+//
+//                JDialog coverageExploDialog = new JDialog(frame, "Coverage-Limited Exploration", true);
+//                coverageExploDialog.setSize(400, 60);
+//                coverageExploDialog.setLayout(new FlowLayout());
+//                final JTextField coverageTF = new JTextField(5);
+//                JButton coverageSaveButton = new JButton("Run");
+//
+//                coverageSaveButton.addMouseListener(new MouseAdapter() {
+//                    public void mousePressed(MouseEvent e) {
+//                        coverageExploDialog.setVisible(false);
+//                        int coveragePercent = (Integer.parseInt(coverageTF.getText()));
+//                        coverageLimit = (int) ((coveragePercent) * 300 / 100.0);
+//                        if (coveragePercent>100 || coveragePercent<0){
+//                            JDialog errorDialog = new JDialog(frame,"Error");
+//                            errorDialog.setSize(400, 60);
+//                            JLabel errorMsg = new JLabel("Coverage Limit is not within range (0-100)");
+//                            errorDialog.add(errorMsg);
+//                            errorDialog.setVisible(true);
+//                        }
+//                        else{
+//                            new ExplorationSimulator().execute();
+//
+//                        }
+//                        //CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+//                        //cl.show(arenaPanel, "EXPLORATION");
+//                        //new ExplorationSimulator().execute();
+//                    }
+//                });
+//
+//                coverageExploDialog.add(new JLabel("Coverage Limit (% of maze): "));
+//                coverageExploDialog.add(coverageTF);
+//                coverageExploDialog.add(coverageSaveButton);
+//                coverageExploDialog.setVisible(true);
+//            }
+//        });
 
 
         //Exploration Button
@@ -524,22 +524,22 @@ public class SimulatorGUI {
         buttonPanel.add(loadMap);
         buttonPanel.add(createArena);
         buttonPanel.add(fastestPath);
-        buttonPanel.add(timeLimited);
-        buttonPanel.add(coverageLimited);
+        //buttonPanel.add(timeLimited);
+        //buttonPanel.add(coverageLimited);
         buttonPanel.add(explorationButton);
 
 
         JPanel fieldPanel = new JPanel();
         fieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 10));
         fieldPanel.setBackground(Color.decode("#AFEEEE"));
-        fieldPanel.add(addingwaypoint);
-        fieldPanel.add(wayX);
-
-        fieldPanel.add(spinnerX);
-        fieldPanel.add(wayY);
-        fieldPanel.add(spinnerY);
-        fieldPanel.add(time);
-        fieldPanel.add(timer);
+//        fieldPanel.add(addingwaypoint);
+//        fieldPanel.add(wayX);
+//
+//        fieldPanel.add(spinnerX);
+//        fieldPanel.add(wayY);
+//        fieldPanel.add(spinnerY);
+//        fieldPanel.add(time);
+//        fieldPanel.add(timer);
         fieldPanel.add(realRunCheck);
         fieldPanel.add(reset);
         controllerPanel.add(fieldPanel, BorderLayout.PAGE_START);
@@ -569,14 +569,14 @@ public class SimulatorGUI {
     public void addloadMapListener(ActionListener actionListener) {
         loadMap.addActionListener(actionListener);
     }
-
-    public void timeLimitedListener(ActionListener actionListener) {
-        timeLimited.addActionListener(actionListener);
-    }
-
-    public void coverageLimitedListener(ActionListener actionListener) {
-        coverageLimited.addActionListener(actionListener);
-    }
+//
+//    public void timeLimitedListener(ActionListener actionListener) {
+//        timeLimited.addActionListener(actionListener);
+//    }
+//
+//    public void coverageLimitedListener(ActionListener actionListener) {
+//        coverageLimited.addActionListener(actionListener);
+//    }
 
     public void disableButtons() {
         explorationButton.setEnabled(false);
@@ -597,60 +597,60 @@ public class SimulatorGUI {
         timeLimited.setEnabled(true);
         coverageLimited.setEnabled(true);
     }
-
-    public void disableExplorationButton() {
-        explorationButton.setEnabled(false);
-    }
-
-    public void enableExplorationButton() {
-        explorationButton.setEnabled(true);
-    }
-
-    public void disableFastestPathButton() {
-        fastestPath.setEnabled(false);
-    }
-
-    public void enableFastestPathButton() {
-        fastestPath.setEnabled(true);
-    }
-
-    public void disableRealRunButton() {
-        realRunCheck.setEnabled(false);
-    }
-
-    public void enableRealRunButton() {
-        realRunCheck.setEnabled(true);
-    }
-
-    public void disableSetObstacles() {
-        loadMap.setEnabled(false);
-    }
-
-    public void enableSetObstacles() {
-        loadMap.setEnabled(true);
-    }
-
-    public void enableTimeLimited() {
-        timeLimited.setEnabled(true);
-    }
-
-    public void enableCoverageLimited() {
-        coverageLimited.setEnabled(true);
-    }
-
-    public boolean getIsRealRun() {
-        return realRunCheck.isSelected();
-    }
-
-    public int getWayPointX() {
-        //return waypointX.getText().equals("") ? 0 : Integer.parseInt(waypointX.getText());
-        return (int) spinnerX.getValue();
-    }
-
-    public int getWayPointY() {
-        //return waypointY.getText().equals("") ? 0 : Integer.parseInt(waypointY.getText());
-        return (int) spinnerY.getValue();
-    }
+//
+//    public void disableExplorationButton() {
+//        explorationButton.setEnabled(false);
+//    }
+//
+//    public void enableExplorationButton() {
+//        explorationButton.setEnabled(true);
+//    }
+//
+//    public void disableFastestPathButton() {
+//        fastestPath.setEnabled(false);
+//    }
+//
+//    public void enableFastestPathButton() {
+//        fastestPath.setEnabled(true);
+//    }
+//
+//    public void disableRealRunButton() {
+//        realRunCheck.setEnabled(false);
+//    }
+//
+//    public void enableRealRunButton() {
+//        realRunCheck.setEnabled(true);
+//    }
+//
+//    public void disableSetObstacles() {
+//        loadMap.setEnabled(false);
+//    }
+//
+//    public void enableSetObstacles() {
+//        loadMap.setEnabled(true);
+//    }
+//
+//    public void enableTimeLimited() {
+//        timeLimited.setEnabled(true);
+//    }
+//
+//    public void enableCoverageLimited() {
+//        coverageLimited.setEnabled(true);
+//    }
+//
+//    public boolean getIsRealRun() {
+//        return realRunCheck.isSelected();
+//    }
+//
+//    public int getWayPointX() {
+//        //return waypointX.getText().equals("") ? 0 : Integer.parseInt(waypointX.getText());
+//        return (int) spinnerX.getValue();
+//    }
+//
+//    public int getWayPointY() {
+//        //return waypointY.getText().equals("") ? 0 : Integer.parseInt(waypointY.getText());
+//        return (int) spinnerY.getValue();
+//    }
 
 }
 

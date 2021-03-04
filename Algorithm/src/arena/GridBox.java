@@ -71,7 +71,7 @@ public class GridBox implements Comparable {
         return (((this.compareX(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.EAST) ||
                 (this.compareX(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.WEST) ||
                 (this.compareY(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.SOUTH) ||
-                (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.NORTH))) ? 50F : 3000F;
+                (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.NORTH))) ? 50F : 300F;
     }
 
     public void setRobotFacingDirection() {

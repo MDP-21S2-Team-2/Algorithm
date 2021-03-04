@@ -29,7 +29,7 @@ public class ArenaView extends JPanel {
 
     public ArenaView() {
         this.setBackground(Color.WHITE);
-        this.setPreferredSize(new Dimension(ArenaConstants.FRAME_WIDTH, ArenaConstants.PANEL_HEIGHT + 50));
+        this.setPreferredSize(new Dimension(ArenaConstants.FRAME_WIDTH, ArenaConstants.PANEL_HEIGHT + 25));
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
         this.calculateDimension();
         this.fillGridBoxes();
@@ -134,7 +134,7 @@ public class ArenaView extends JPanel {
 
         for(int i = y - 1; i <= y + 1; ++i) {
             for(int j = x - 1; j <= x + 1; ++j) {
-                if (i <= 19 && i >= 0 && j <= 14 && j > 0) {
+                if (i < 20 && i >= 0 && j < 15 && j >= 0) {
                     gridArray[i][j].setExplored(true);
                 }
             }
