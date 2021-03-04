@@ -68,7 +68,10 @@ public class GridBox implements Comparable {
 
     private float getWeight(GridBox neighbouringGrid, boolean isStartGrid) {
         this.setRobotFacingDirection();
-        return (((this.compareX(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.EAST) || (this.compareX(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.WEST) || (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.SOUTH) || (this.compareY(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.NORTH)) && !isStartGrid) ? 50F : 3000F;
+        return (((this.compareX(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.EAST) ||
+                (this.compareX(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.WEST) ||
+                (this.compareY(neighbouringGrid) == 1 && this.robotFacingDirection == Direction.SOUTH) ||
+                (this.compareY(neighbouringGrid) == -1 && this.robotFacingDirection == Direction.NORTH)) && !isStartGrid) ? 100F : 200F;
     }
 
     public void setRobotFacingDirection() {
@@ -80,9 +83,9 @@ public class GridBox implements Comparable {
             } else if (this.compareX(this.pathParent) == -1) {
                 this.robotFacingDirection = Direction.EAST;
             } else if (this.compareY(this.pathParent) == 1) {
-                this.robotFacingDirection = Direction.SOUTH;
-            } else if (this.compareY(this.pathParent) == -1) {
                 this.robotFacingDirection = Direction.NORTH;
+            } else if (this.compareY(this.pathParent) == -1) {
+                this.robotFacingDirection = Direction.SOUTH;
             }
 
         }

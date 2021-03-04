@@ -60,8 +60,8 @@ public class SimulatorGUI {
     public JButton reset;
     public int timeLimit = 300;
     public int coverageLimit = 300;
-    public static int _waypointX = 13;
-    public static int _waypointY = 17;
+    public static int _waypointX = 6;
+    public static int _waypointY = 18;
     public String p1_;
     public String p2_ = "0000000000000000000000000000000000000000000000000000000000000000000000000000";
 
