@@ -461,22 +461,23 @@ public class Robot {
     }
 
     public void expSendArduinoRotate(Command command, int delay) {
-        String outputPacket;
+        String outputPacket = "";
         if (command == Command.RIGHT) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
-        }
-        else if (command == Command.LEFT){
+        } else if (command == Command.LEFT) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
-        }
-        else {
+        } else if (command == Command.TURN180) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_180;
         }
-        try{
-            Thread.sleep(delay);
-            tcp.sendPacket(outputPacket);
-            //tcp.receiveBytesArduino();
-        }catch (InterruptedException e){
-            e.printStackTrace();}
+        if (outputPacket != ""){
+            try {
+                Thread.sleep(delay);
+                tcp.sendPacket(outputPacket);
+                //tcp.receiveBytesArduino();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 //        try{
 //            Thread.sleep(delay);
 //            tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
