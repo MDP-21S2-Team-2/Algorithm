@@ -304,24 +304,24 @@ public class Exploration {
 //            }
             SimulatorGUI.arenaView.repaint();
 
-            if (this.realRun && !this.calibrationMode) {
-                this.calibrationMode = true;
-                if (this.canCalibrateOnTheSpot(SimulatorGUI.arenaView.robot.getFacingDirection())) {
-                    this.lastCalibrate = 0;
-                    this.moveBot(Command.CALIBRATE);
-                } else {
-                    ++this.lastCalibrate;
-                    if (this.lastCalibrate >= 5) {
-                        Direction targetDirection = this.getCalibrationDirection();
-                        if (targetDirection != null) {
-                            this.lastCalibrate = 0;
-                            this.calibrateBot(targetDirection);
-                        }
-                    }
-                }
-
-                this.calibrationMode = false;
-            }
+//            if (this.realRun && !this.calibrationMode) {
+//                this.calibrationMode = true;
+//                if (this.canCalibrateOnTheSpot(SimulatorGUI.arenaView.robot.getFacingDirection())) {
+//                    this.lastCalibrate = 0;
+//                    this.moveBot(Command.CALIBRATE);
+//                } else {
+//                    ++this.lastCalibrate;
+//                    if (this.lastCalibrate >= 5) {
+//                        Direction targetDirection = this.getCalibrationDirection();
+//                        if (targetDirection != null) {
+//                            this.lastCalibrate = 0;
+//                            this.calibrateBot(targetDirection);
+//                        }
+//                    }
+//                }
+//
+//                this.calibrationMode = false;
+//            }
         } catch (InterruptedException var3) {
             var3.printStackTrace();
         }
