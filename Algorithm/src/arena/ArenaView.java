@@ -29,8 +29,8 @@ public class ArenaView extends JPanel {
 
     public ArenaView() {
         this.setBackground(Color.WHITE);
-        this.setPreferredSize(new Dimension(ArenaConstants.FRAME_WIDTH, ArenaConstants.PANEL_HEIGHT + 25));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.setPreferredSize(new Dimension(ArenaConstants.PANEL_WIDTH, ArenaConstants.PANEL_HEIGHT + 25));
+        //this.setLayout(new FlowLayout(FlowLayout.CENTER));
         this.calculateDimension();
         this.fillGridBoxes();
         //this.createObstacles();

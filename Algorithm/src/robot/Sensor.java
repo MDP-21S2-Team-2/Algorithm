@@ -30,7 +30,7 @@ public class  Sensor {
         switch (range){
             case SHORT:
                 this.lowerLimit = 1;
-                this.upperLimit = 3;
+                this.upperLimit = 2;
                 break;
             case LONG:
                 this.lowerLimit = 1;
