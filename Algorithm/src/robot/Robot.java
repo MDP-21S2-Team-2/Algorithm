@@ -45,7 +45,7 @@ public class Robot {
         if (command == Command.FORWARD) {
             move(command,1);
             if (realRun)
-                tcp.sendPacket(SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + 0);
+                tcp.sendPacket(SEND_ARDUINO + SEPARATOR + MOVE_FORWARD_E + 0);
                 //tcp.receiveBytesArduino();
                 //sendArduinoMultipleForward(1,100);
         }

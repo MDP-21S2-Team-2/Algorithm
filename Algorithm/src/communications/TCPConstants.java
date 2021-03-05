@@ -28,6 +28,7 @@ public class TCPConstants {
     public static final String FACING_EAST = "90";
     public static final String FACING_WEST = "270";
     public static final String MOVE_FORWARD = "M";
+    public static final String MOVE_FORWARD_E = "E";
     public static final String ROTATE_LEFT = "L";
     public static final String ROTATE_RIGHT = "R";
     public static final String ROTATE_180 = "B";
