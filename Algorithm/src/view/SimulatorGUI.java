@@ -170,28 +170,33 @@ public class SimulatorGUI {
         //Loading Map from disk
         loadMap.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                JDialog loadMapDialog = new JDialog(frame, "Load Map", true);
-                loadMapDialog.setSize(400, 60);
-                loadMapDialog.setLayout(new FlowLayout());
-
-                final JTextField loadTF = new JTextField(15);
-                JButton loadMapButton = new JButton("Load");
-
-                loadMapButton.addMouseListener(new MouseAdapter() {
-                    public void mousePressed(MouseEvent e) {
-                        loadMapDialog.setVisible(false);
-                        loadMapFromDisk(arenaView, loadTF.getText());
-                        CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+                loadMapFromDisk(arenaView, "Exploration4");
+                CardLayout cl = ((CardLayout) arenaPanel.getLayout());
                         cl.show(arenaPanel, "Map");
                         arenaView.calculateSpaceClearance();
                         arenaView.repaint();
-                    }
-                });
-
-                loadMapDialog.add(new JLabel("File Name: "));
-                loadMapDialog.add(loadTF);
-                loadMapDialog.add(loadMapButton);
-                loadMapDialog.setVisible(true);
+//                JDialog loadMapDialog = new JDialog(frame, "Load Map", true);
+//                loadMapDialog.setSize(400, 60);
+//                loadMapDialog.setLayout(new FlowLayout());
+//
+//                final JTextField loadTF = new JTextField(15);
+//                JButton loadMapButton = new JButton("Load");
+//
+//                loadMapButton.addMouseListener(new MouseAdapter() {
+//                    public void mousePressed(MouseEvent e) {
+//                        loadMapDialog.setVisible(false);
+//                        loadMapFromDisk(arenaView, loadTF.getText());
+//                        CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+//                        cl.show(arenaPanel, "Map");
+//                        arenaView.calculateSpaceClearance();
+//                        arenaView.repaint();
+//                    }
+//                });
+//
+//                loadMapDialog.add(new JLabel("File Name: "));
+//                loadMapDialog.add(loadTF);
+//                loadMapDialog.add(loadMapButton);
+//                loadMapDialog.setVisible(true);
             }
         });
 
