@@ -8,6 +8,8 @@ package navigation;
 import arena.ArenaView;
 import arena.GridBox;
 import java.io.PrintStream;
+import java.sql.SQLOutput;
+
 import robot.Command;
 import view.SimulatorGUI;
 
@@ -66,7 +68,58 @@ public class Exploration {
             }
         } while(this.areaExplored < this.coverageLimit && System.currentTimeMillis() <= this.endTime);
 
+        fastestPathToUnexploredCells();
         this.goHome();
+    }
+
+    private void fastestPathToUnexploredCells(){
+        arenaView.calculateSpaceClearance();
+        GridBox currentGridBox = arenaView.robot.getCurrentGridCell();
+        System.out.println("Current Gridbox X: "+ currentGridBox.getX() + " Y:"+currentGridBox.getY());
+        GridBox gridNextToUnExplored = findGridNextToUnexploredCell();
+        System.out.println("Nearest Grid Unxplored X: " + gridNextToUnExplored.getX() + " Y:" + gridNextToUnExplored.getY());
+        System.out.println("Clear Status:" + gridNextToUnExplored.isClearStatus());
+        navigation.FastestPath fp1 = new navigation.FastestPath(currentGridBox, gridNextToUnExplored);
+        navigation.FastestPath fp2 = null;
+        System.out.println("Fastest Path is Empty " + fp1.findFastestPath().isEmpty());
+        arenaView.robot.simulateFastestPath(fp1.findFastestPath(),fp2.findFastestPath());
+        System.out.println("Fastest Path to Unexplored");
+    }
+
+    private GridBox findGridNextToUnexploredCell(){
+        System.out.println("Start findGridNextToUnexploredCell");
+        for (int col = 3; col <=11; col++){
+            for (int row = 16; row >=3; row--){
+                if (!arenaView.gridArray[row][col].isExplored()) {
+                    // Bottom Grid
+                    if (arenaView.checkValidCoordinates(row + 2, col)) {
+                        if (arenaView.gridArray[row + 2][col].isExplored() && arenaView.gridArray[row + 2][col].isClearStatus() && !arenaView.gridArray[row + 2][col].isObstacle()) {
+                            return arenaView.getGrid(row + 2, col);
+                        }
+                    }
+                    //Left Grid
+                    else if (arenaView.checkValidCoordinates(row, col - 2)) {
+                        if (arenaView.gridArray[row][col - 2].isExplored() && arenaView.gridArray[row][col - 2].isClearStatus() && !arenaView.gridArray[row][col - 2].isObstacle()) {
+                            System.out.println("In Correct Condition");
+                            return arenaView.getGrid(row, col - 2);
+                        }
+                    }
+                    //Right Grid
+                    else if (arenaView.checkValidCoordinates(row, col + 2)) {
+                        if (arenaView.gridArray[row][col + 2].isExplored() && arenaView.gridArray[row][col + 2].isClearStatus() && !arenaView.gridArray[row][col + 2].isObstacle()) {
+                            return arenaView.getGrid(row, col + 2);
+                        }
+                    }
+                    //Top Grid
+                    else if (arenaView.checkValidCoordinates(row - 2, col)) {
+                        if (arenaView.gridArray[row - 2][col].isExplored() && arenaView.gridArray[row - 2][col].isClearStatus() && !arenaView.gridArray[row - 2][col].isObstacle()) {
+                            return arenaView.getGrid(row - 2, col);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private void decideOnNextMove() {
@@ -168,30 +221,6 @@ public class Exploration {
         }
     }
 
-//    private boolean checkNorthNotExplored() {
-//        int r = SimulatorGUI.arenaView.robot.getCurrPosY();
-//        int c = SimulatorGUI.arenaView.robot.getCurrPosX();
-//        return !this.isGridExplored(r - 2, c - 1) || !this.isGridExplored(r - 2, c) || !this.isGridExplored(r - 2, c + 1);
-//    }
-//
-//    private boolean checkSouthNotExplored() {
-//        int r = SimulatorGUI.arenaView.robot.getCurrPosY();
-//        int c = SimulatorGUI.arenaView.robot.getCurrPosX();
-//        return !this.isGridExplored(r + 2, c + 1) || !this.isGridExplored(r + 2, c) || !this.isGridExplored(r + 2, c - 1);
-//    }
-//
-//    private boolean checkEastNotExplored() {
-//        int r = SimulatorGUI.arenaView.robot.getCurrPosY();
-//        int c = SimulatorGUI.arenaView.robot.getCurrPosX();
-//        return !this.isGridExplored(r - 1, c + 2) || !this.isGridExplored(r, c + 2) || !this.isGridExplored(r + 1, c + 2);
-//    }
-//
-//    private boolean checkWestNotExplored() {
-//        int r = SimulatorGUI.arenaView.robot.getCurrPosY();
-//        int c = SimulatorGUI.arenaView.robot.getCurrPosX();
-//        return !this.isGridExplored(r + 1, c - 2) || !this.isGridExplored(r, c - 2) || !this.isGridExplored(r - 1, c - 2);
-//    }
-
     private boolean isGridExplored(int row, int col) {
         if (SimulatorGUI.arenaView.checkValidCoordinates(row, col)) {
             int c = SimulatorGUI.arenaView.robot.getCurrPosX();
@@ -228,7 +257,7 @@ public class Exploration {
     }
 
     private void goHome() {
-        System.out.println("Exploration complete!");
+        System.out.println("\nExploration complete!");
         this.areaExplored = this.calculateAreaExplored();
         System.out.printf("%.2f%% Coverage", (double)this.areaExplored / 300.0D * 100.0D);
         System.out.println(", " + this.areaExplored + " Cells");
@@ -247,12 +276,12 @@ public class Exploration {
 //            FastestPath toHome = new FastestPath(var6, ArenaView.gridArray[18][1]);
 //            SimulatorGUI.arenaView.robot.simulateFastestPath(toHome.findFastestPath());
         } else {
-            this.turnBotDirection(Direction.WEST);
-            this.moveBot(Command.CALIBRATE);
-            this.turnBotDirection(Direction.SOUTH);
-            this.moveBot(Command.CALIBRATE);
-            this.turnBotDirection(Direction.WEST);
-            this.moveBot(Command.CALIBRATE);
+//            this.turnBotDirection(Direction.WEST);
+//            this.moveBot(Command.CALIBRATE);
+//            this.turnBotDirection(Direction.SOUTH);
+//            this.moveBot(Command.CALIBRATE);
+//            this.turnBotDirection(Direction.WEST);
+//            this.moveBot(Command.CALIBRATE);
         }
 
         this.turnBotDirection(Direction.NORTH);
@@ -293,11 +322,11 @@ public class Exploration {
     private void moveBot(Command m) {
         int delay;
         if (realRun)
-            delay = 0;
-        else
             delay = 100;
+        else
+            delay = 50;
         try {
-            Thread.sleep(100);
+            Thread.sleep(delay);
             SimulatorGUI.arenaView.robot.remote(m,realRun);
 //            if (m != Command.CALIBRATE) {
 //                this.senseAndRepaint();
