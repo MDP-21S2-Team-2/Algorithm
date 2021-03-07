@@ -80,6 +80,7 @@ public class Robot {
                 currPosX -= s;
                 break;
         }
+        arenaView.gridArray[currPosY][currPosX].setEnteredCount(arenaView.gridArray[currPosY][currPosX].getEnteredCount()+1);
         arenaView.repaint();
     }
 
@@ -163,6 +164,7 @@ public class Robot {
     public void simulateFastestPath(Stack<GridBox> path1, Stack<GridBox> path2 ){
         arenaView.generateFastestPathObstacles();
         arenaView.repaint();
+        System.out.println("Simulating fastestPath");
         while (!path1.empty() ||!path2.empty() ){
             GridBox grid;
             if (!path1.empty())

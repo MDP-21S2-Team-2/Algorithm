@@ -25,6 +25,7 @@ public class FastestPath {
         Stack path;
         for(path = new Stack(); grid.getPathParent() != null; grid = grid.getPathParent()) {
             path.push(grid);
+            System.out.println("Building Path X:" + grid.getX() + " Y:" + grid.getY());
         }
 
         return path;
@@ -44,6 +45,7 @@ public class FastestPath {
             GridBox grid = (GridBox)priorityList.removeFirst();
             isStartGrid = (grid == startGrid);
             if (grid.getPathParent() == null) {
+                System.out.println("I have no parent");
                 grid.setRobotFacingDirection(Direction.NORTH);
                 System.out.println(grid.getRobotFacingDirection());
             }

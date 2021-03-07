@@ -301,45 +301,6 @@ public class SimulatorGUI {
                     //arenaView.robot.executeFastestPath(fp2.findFastestPath());
                 }
 
-
-//                    while (true){
-//                        String packet1 = tcp.receivePacket();
-//                        if (packet1.equals("UPDATE")){
-//                        tcp.sendMDFAndroid(p2_); //not sure if this has to wait for something
-//                        break;
-//                    }
-                    //}
-//                    while (true){
-//                        String packet1 = tcp.receivePacket();
-//                        if (packet1.equals("C")){
-//                            tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR+packet1); //not sure if this has to wait for something
-//                            break;
-//                        }
-//                    }
-//                    String packet = tcp.receivePacket();
-//                    while (true) {
-//                        packet = tcp.receivePacket();
-//                        System.out.println("Waiting for FP_START...");
-//                        if (packet.equals(tcp.START_FP)) break;
-//                        else if (packet.contains(TCPConstants.INITIAL_CALIBRATE)){
-//                            tcp.checkNForwardPacket(packet);
-//                        }
-//                        else if (packet.contains(TCPConstants.SET_WP)) {
-//                            tcp.setWayPoint(_waypointX, _waypointY);
-//                            _waypointY = 19-_waypointY;
-//                            System.out.println("WayPoint set! " +_waypointY + " " + _waypointX );
-//                        }
-//                    }
-//                    GridBox waypoint = gridArray[_waypointY][_waypointX];
-//                    GridBox endGrid = gridArray[ArenaConstants.GOAL_ROW][ArenaConstants.GOAL_COL];
-//                    endGrid.printGridInfo();
-//                    //navigation.FastestPath fp = new navigation.FastestPath(startGrid,endGrid);
-//                    navigation.FastestPath fp1 = new navigation.FastestPath(startGrid,waypoint);
-//                    navigation.FastestPath fp2 = new navigation.FastestPath(waypoint,endGrid);
-//                    //arenaView.robot.executeFastestPath(fp.findFastestPath());
-//                    arenaView.robot.executeFastestPath(fp1.findFastestPath());
-//                    arenaView.robot.executeFastestPath(fp2.findFastestPath());
-//                }
                 else {
                     GridBox waypoint = gridArray[_waypointY][_waypointX];
                     GridBox endGrid = gridArray[ArenaConstants.GOAL_ROW][ArenaConstants.GOAL_COL];

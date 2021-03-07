@@ -118,9 +118,9 @@ public class ArenaView extends JPanel {
         return obstacleGrids[row][col] == 1;
     }
 
-    public void setIsObstacleGrids(int row, int col) {
+    public void setIsObstacleGrids(int row, int col, boolean isObstacle) {
         obstacleGrids[row][col] = 1;
-        gridArray[row][col].setObstacle(true);
+        gridArray[row][col].setObstacle(isObstacle);
     }
 
     public boolean isSimulatedObstacle(int row, int col) {
