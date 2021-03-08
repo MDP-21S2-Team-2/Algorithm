@@ -88,7 +88,7 @@ public class Exploration {
                     break;
                 }
             }
-            else if (arenaView.gridArray[arenaView.robot.getCurrPosY()][arenaView.robot.getCurrPosX()].getEnteredCount() >= 2) break;
+            else if (arenaView.gridArray[arenaView.robot.getCurrPosY()][arenaView.robot.getCurrPosX()].getEnteredCount() >= 4) break;
         } while(this.areaExplored < this.coverageLimit && System.currentTimeMillis() <= this.endTime);
 
     }

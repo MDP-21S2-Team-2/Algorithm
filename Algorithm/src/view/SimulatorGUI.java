@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
 import static arena.ArenaLoader.loadMapFromDisk;
 import static arena.ArenaLoader.createArenaHex;
 import static arena.ArenaLoader.generateMapDescriptor;
+
+import navigation.ImageRecognition;
 import view.EntryPoint;
 import java.text.NumberFormat;
 
@@ -45,6 +47,7 @@ public class SimulatorGUI {
     public JButton fastestPath;
     public JButton loadMap;
     public JButton randomObstacles;
+    public JButton imageRecButton;
     public JLabel addingwaypoint;
     public JLabel wayX;
     public JButton createArena;
@@ -157,6 +160,7 @@ public class SimulatorGUI {
         //coverageLimited = new JButton("Coverage Limited");
         explorationButton = new JButton("Exploration");
         reset = new JButton("Reset");
+        imageRecButton = new JButton("Image Recognition");
 
         //waypoint
 //        wayX = new JLabel("X",JLabel.LEFT);
@@ -333,6 +337,61 @@ public class SimulatorGUI {
             }
         });
 
+        class ImageRecognitionExplore extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                ImageRecognition imgRecog = new ImageRecognition(coverageLimit, timeLimit, !simulation);
+                boolean runnningwhile = true;
+                if (simulation) {
+                    System.out.println("Exploration Started Part 1");
+                    imgRecog.runImageRecognitionExploration();
+                } else {
+                    tcp.establishConnection();
+                    do {
+                        boolean initialSense = false;
+                        String packet1 = tcp.receivePacket();
+                        switch (packet1) {
+                            case (TCPConstants.INITIAL_CALIBRATE):
+                                tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR + packet1);
+                                while (!initialSense) {
+                                    System.out.println("In while loop simulatorGUI");
+                                    arenaView.robot.setSensors();
+                                    initialSense = arenaView.robot.sense();
+                                }
+                                arenaView.repaint();
+                                System.out.println("Calibration done!");
+                                break;
+                            case (TCPConstants.START_EXP):
+                                runnningwhile = false;
+                                break;
+                            case (TCPConstants.UPDATEMAP_ANDROID):
+                                tcp.sendMDFAndroid(p2_);
+                                break;//not sure if this has to wait for something
+                        }
+                    }
+                    while (runnningwhile);
+                    imgRecog.runImageRecognitionExploration();
+                }
+                System.out.println(generateMapDescriptor(arenaView));
+                return 222;
+            }
+        }
+
+        imageRecButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                //Getting simulation value
+                simulation = realRunCheck.isSelected();
+                //Setting Way Point
+                //_waypointX = (int) spinnerX.getValue();
+                //_waypointY = (int) spinnerY.getValue();
+                //CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+                //cl.show(arenaPanel, "Fastest Path");
+                //arenaView.calculateSpaceClearance();
+                //arenaView.repaint();
+                new ImageRecognitionExplore().execute();
+            }
+        });
+
+
         //Exploration Multi-Threading
         class ExplorationSimulator extends SwingWorker<Integer, String> {
             protected Integer doInBackground() throws Exception {
@@ -491,6 +550,7 @@ public class SimulatorGUI {
         buttonPanel.add(loadMap);
         buttonPanel.add(createArena);
         buttonPanel.add(fastestPath);
+        buttonPanel.add(imageRecButton);
         //buttonPanel.add(timeLimited);
         //buttonPanel.add(coverageLimited);
         buttonPanel.add(explorationButton);
