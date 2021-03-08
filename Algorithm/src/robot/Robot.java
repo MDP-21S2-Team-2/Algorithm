@@ -171,6 +171,19 @@ public class Robot {
                 grid = path1.pop();
             else
                 grid = path2.pop();
+
+            int x = grid.getX();
+            int y = grid.getY();
+            arenaView.gridArray[y][x].setExplored(true);
+
+            for(int i = y - 1; i <= y + 1; ++i) {
+                for(int j = x - 1; j <= x + 1; ++j) {
+                    if (i < 20 && i >= 0 && j < 15 && j >= 0) {
+                        arenaView.gridArray[i][j].setExplored(true);
+                    }
+                }
+            }
+
             try{
                 Thread.sleep(100);
                 if (grid.getX() > currPosX){
@@ -408,6 +421,18 @@ public class Robot {
                 if (!path2.empty()){
                     if (path2.size() < 2){
                         lastMove = true;
+                    }
+                }
+
+                int x = grid.getX();
+                int y = grid.getY();
+                arenaView.gridArray[y][x].setExplored(true);
+
+                for(int i = y - 1; i <= y + 1; ++i) {
+                    for(int j = x - 1; j <= x + 1; ++j) {
+                        if (i < 20 && i >= 0 && j < 15 && j >= 0) {
+                            arenaView.gridArray[i][j].setExplored(true);
+                        }
                     }
                 }
 

@@ -63,8 +63,8 @@ public class SimulatorGUI {
     public JButton reset;
     public int timeLimit = 300;
     public int coverageLimit = 300;
-    public static int _waypointX = 1;
-    public static int _waypointY = 18;
+    public static int _waypointX = 2;
+    public static int _waypointY = 9;
     public String p1_;
     public String p2_ = "0000000000000000000000000000000000000000000000000000000000000000000000000000";
 
@@ -313,7 +313,7 @@ public class SimulatorGUI {
                     navigation.FastestPath fp1 = new navigation.FastestPath(startGrid,waypoint);
                     navigation.FastestPath fp2 = new navigation.FastestPath(waypoint,endGrid);
                     //arenaView.robot.simulateFastestPath(fp.findFastestPath());
-                    arenaView.robot.simulateFastestPath(fp1.findFastestPath(),fp2.findFastestPath());
+                    arenaView.robot.simulateFastestPathCommands(fp1.findFastestPath(),fp2.findFastestPath());
                     //arenaView.robot.simulateFastestPath(fp2.findFastestPath());
                 }
 
