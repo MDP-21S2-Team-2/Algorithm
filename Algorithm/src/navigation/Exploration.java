@@ -107,6 +107,7 @@ public class Exploration {
 
     private GridBox findGridNextToUnexploredCell(){
         System.out.println("Start findGridNextToUnexploredCell");
+        arenaView.gridsClearEnteredCount();
         int rowDifference;
         int colDifference;
         //Calculate Robot's position and determine where to look first

@@ -189,6 +189,14 @@ public class ArenaView extends JPanel {
         return true;
     }
 
+    public void gridsClearEnteredCount(){
+        for(int y = 0; y < ArenaConstants.NUM_ROWS; ++y) {
+            for(int x = 0; x < ArenaConstants.NUM_COLS; ++x) {
+                gridArray[y][x].setEnteredCount(0);
+            }
+        }
+    }
+
 
     private void paintGridBoxsExploration (Graphics g){
         this.robotMovement();
