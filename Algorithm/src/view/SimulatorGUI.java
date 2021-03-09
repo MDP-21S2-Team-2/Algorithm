@@ -270,6 +270,10 @@ public class SimulatorGUI {
                                 tcp.sendMDFAndroid(p2_);
                                 break;//not sure if this has to wait for something
                             case (TCPConstants.INITIAL_CALIBRATE):
+                            case (TCPConstants.ENABLE_ALIGNMENT):
+                            case (TCPConstants.DISABLE_ALIGNMENT):
+                            case (TCPConstants.ENABLE_E_BRAKES):
+                            case (TCPConstants.DISABLE_E_BRAKES):
                                 tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR + packet1);
                                 while (!tcp.receivePacket().equals("K")) {
                                     break;

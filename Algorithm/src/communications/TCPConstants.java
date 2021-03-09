@@ -36,6 +36,10 @@ public class TCPConstants {
     public static final String SNAP_PHOTO = "SNAP";
     public static final String IR_SENSORS = "IR";
     public static final String INITIAL_CALIBRATE = "C";
+    public static final String ENABLE_ALIGNMENT = "a";
+    public static final String DISABLE_ALIGNMENT = "b";
+    public static final String ENABLE_E_BRAKES = "e";
+    public static final String DISABLE_E_BRAKES = "f";
     public static final String UPDATEMAP_ANDROID = "UPDATE";
 
     public TCPConstants() {
