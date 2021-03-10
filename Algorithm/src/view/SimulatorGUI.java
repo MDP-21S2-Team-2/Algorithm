@@ -16,6 +16,8 @@ import java.awt.event.MouseEvent;
 import static arena.ArenaLoader.loadMapFromDisk;
 import static arena.ArenaLoader.createArenaHex;
 import static arena.ArenaLoader.generateMapDescriptor;
+
+import navigation.ImageRecognition;
 import view.EntryPoint;
 import java.text.NumberFormat;
 
@@ -45,6 +47,7 @@ public class SimulatorGUI {
     public JButton fastestPath;
     public JButton loadMap;
     public JButton randomObstacles;
+    public JButton imageRecButton;
     public JLabel addingwaypoint;
     public JLabel wayX;
     public JButton createArena;
@@ -102,6 +105,7 @@ public class SimulatorGUI {
         arenaView.calculateSpaceClearance();
         arenaPanel.add(arenaView);
         frame = new JFrame("MDP Group 2");
+        frame.setBackground(Color.WHITE);
         //frame.setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout(10,10));
         frameWidth = ArenaConstants.FRAME_WIDTH;
@@ -156,6 +160,7 @@ public class SimulatorGUI {
         //coverageLimited = new JButton("Coverage Limited");
         explorationButton = new JButton("Exploration");
         reset = new JButton("Reset");
+        imageRecButton = new JButton("Image Recognition");
 
         //waypoint
 //        wayX = new JLabel("X",JLabel.LEFT);
@@ -170,28 +175,33 @@ public class SimulatorGUI {
         //Loading Map from disk
         loadMap.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                JDialog loadMapDialog = new JDialog(frame, "Load Map", true);
-                loadMapDialog.setSize(400, 60);
-                loadMapDialog.setLayout(new FlowLayout());
-
-                final JTextField loadTF = new JTextField(15);
-                JButton loadMapButton = new JButton("Load");
-
-                loadMapButton.addMouseListener(new MouseAdapter() {
-                    public void mousePressed(MouseEvent e) {
-                        loadMapDialog.setVisible(false);
-                        loadMapFromDisk(arenaView, loadTF.getText());
-                        CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+                loadMapFromDisk(arenaView, "Exploration4");
+                CardLayout cl = ((CardLayout) arenaPanel.getLayout());
                         cl.show(arenaPanel, "Map");
                         arenaView.calculateSpaceClearance();
                         arenaView.repaint();
-                    }
-                });
-
-                loadMapDialog.add(new JLabel("File Name: "));
-                loadMapDialog.add(loadTF);
-                loadMapDialog.add(loadMapButton);
-                loadMapDialog.setVisible(true);
+//                JDialog loadMapDialog = new JDialog(frame, "Load Map", true);
+//                loadMapDialog.setSize(400, 60);
+//                loadMapDialog.setLayout(new FlowLayout());
+//
+//                final JTextField loadTF = new JTextField(15);
+//                JButton loadMapButton = new JButton("Load");
+//
+//                loadMapButton.addMouseListener(new MouseAdapter() {
+//                    public void mousePressed(MouseEvent e) {
+//                        loadMapDialog.setVisible(false);
+//                        loadMapFromDisk(arenaView, loadTF.getText());
+//                        CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+//                        cl.show(arenaPanel, "Map");
+//                        arenaView.calculateSpaceClearance();
+//                        arenaView.repaint();
+//                    }
+//                });
+//
+//                loadMapDialog.add(new JLabel("File Name: "));
+//                loadMapDialog.add(loadTF);
+//                loadMapDialog.add(loadMapButton);
+//                loadMapDialog.setVisible(true);
             }
         });
 
@@ -199,9 +209,9 @@ public class SimulatorGUI {
         createArena.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 p1_ = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-                //p2_ = "01000000000000F00000000000400007E0000000000000001F80000780000000000004000800"; //Arena 1
+                p2_ = "01000000000000F00000000000400007E0000000000000001F80000780000000000004000800"; //Arena 1
                 //p2_ = "000000000000010042038400000000000000030C000000000000021F84000800000000000400"; //Arena 2
-                p2_ = "0000000000000400080010C000F0000000000000007E00FC0000000180000100020004000800"; //Arena 3
+                //p2_ = "0000000000000400080010C000F0000000000000007E00FC0000000180000100020004000800"; //Arena 3
                 //p2_ = "00400080010000000000003F000000000000400100040F000000000380000000080010002000"; // Arena 4
                 //p2_ = "0700000000000001C00002000400080010202040408001000200040000380000000020004200"; // Arena 5
                 //p2_ = "01C0000000000000001F0000000000000007E000000000001F83C00400000000000000000000"; //Shared Arena
@@ -260,6 +270,10 @@ public class SimulatorGUI {
                                 tcp.sendMDFAndroid(p2_);
                                 break;//not sure if this has to wait for something
                             case (TCPConstants.INITIAL_CALIBRATE):
+                            case (TCPConstants.ENABLE_ALIGNMENT):
+                            case (TCPConstants.DISABLE_ALIGNMENT):
+                            case (TCPConstants.ENABLE_E_BRAKES):
+                            case (TCPConstants.DISABLE_E_BRAKES):
                                 tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR + packet1);
                                 while (!tcp.receivePacket().equals("K")) {
                                     break;
@@ -295,45 +309,6 @@ public class SimulatorGUI {
                     //arenaView.robot.executeFastestPath(fp2.findFastestPath());
                 }
 
-
-//                    while (true){
-//                        String packet1 = tcp.receivePacket();
-//                        if (packet1.equals("UPDATE")){
-//                        tcp.sendMDFAndroid(p2_); //not sure if this has to wait for something
-//                        break;
-//                    }
-                    //}
-//                    while (true){
-//                        String packet1 = tcp.receivePacket();
-//                        if (packet1.equals("C")){
-//                            tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR+packet1); //not sure if this has to wait for something
-//                            break;
-//                        }
-//                    }
-//                    String packet = tcp.receivePacket();
-//                    while (true) {
-//                        packet = tcp.receivePacket();
-//                        System.out.println("Waiting for FP_START...");
-//                        if (packet.equals(tcp.START_FP)) break;
-//                        else if (packet.contains(TCPConstants.INITIAL_CALIBRATE)){
-//                            tcp.checkNForwardPacket(packet);
-//                        }
-//                        else if (packet.contains(TCPConstants.SET_WP)) {
-//                            tcp.setWayPoint(_waypointX, _waypointY);
-//                            _waypointY = 19-_waypointY;
-//                            System.out.println("WayPoint set! " +_waypointY + " " + _waypointX );
-//                        }
-//                    }
-//                    GridBox waypoint = gridArray[_waypointY][_waypointX];
-//                    GridBox endGrid = gridArray[ArenaConstants.GOAL_ROW][ArenaConstants.GOAL_COL];
-//                    endGrid.printGridInfo();
-//                    //navigation.FastestPath fp = new navigation.FastestPath(startGrid,endGrid);
-//                    navigation.FastestPath fp1 = new navigation.FastestPath(startGrid,waypoint);
-//                    navigation.FastestPath fp2 = new navigation.FastestPath(waypoint,endGrid);
-//                    //arenaView.robot.executeFastestPath(fp.findFastestPath());
-//                    arenaView.robot.executeFastestPath(fp1.findFastestPath());
-//                    arenaView.robot.executeFastestPath(fp2.findFastestPath());
-//                }
                 else {
                     GridBox waypoint = gridArray[_waypointY][_waypointX];
                     GridBox endGrid = gridArray[ArenaConstants.GOAL_ROW][ArenaConstants.GOAL_COL];
@@ -342,7 +317,7 @@ public class SimulatorGUI {
                     navigation.FastestPath fp1 = new navigation.FastestPath(startGrid,waypoint);
                     navigation.FastestPath fp2 = new navigation.FastestPath(waypoint,endGrid);
                     //arenaView.robot.simulateFastestPath(fp.findFastestPath());
-                    arenaView.robot.simulateFastestPath(fp1.findFastestPath(),fp2.findFastestPath());
+                    arenaView.robot.simulateFastestPathCommands(fp1.findFastestPath(),fp2.findFastestPath());
                     //arenaView.robot.simulateFastestPath(fp2.findFastestPath());
                 }
 
@@ -365,6 +340,61 @@ public class SimulatorGUI {
                 new FastestPath().execute();
             }
         });
+
+        class ImageRecognitionExplore extends SwingWorker<Integer, String> {
+            protected Integer doInBackground() throws Exception {
+                ImageRecognition imgRecog = new ImageRecognition(coverageLimit, timeLimit, !simulation);
+                boolean runnningwhile = true;
+                if (simulation) {
+                    System.out.println("Exploration Started Part 1");
+                    imgRecog.runImageRecognitionExploration();
+                } else {
+                    tcp.establishConnection();
+                    do {
+                        boolean initialSense = false;
+                        String packet1 = tcp.receivePacket();
+                        switch (packet1) {
+                            case (TCPConstants.INITIAL_CALIBRATE):
+                                tcp.sendPacket(TCPConstants.SEND_ARDUINO + TCPConstants.SEPARATOR + packet1);
+                                while (!initialSense) {
+                                    System.out.println("In while loop simulatorGUI");
+                                    arenaView.robot.setSensors();
+                                    initialSense = arenaView.robot.sense();
+                                }
+                                arenaView.repaint();
+                                System.out.println("Calibration done!");
+                                break;
+                            case (TCPConstants.START_EXP):
+                                runnningwhile = false;
+                                break;
+                            case (TCPConstants.UPDATEMAP_ANDROID):
+                                tcp.sendMDFAndroid(p2_);
+                                break;//not sure if this has to wait for something
+                        }
+                    }
+                    while (runnningwhile);
+                    imgRecog.runImageRecognitionExploration();
+                }
+                System.out.println(generateMapDescriptor(arenaView));
+                return 222;
+            }
+        }
+
+        imageRecButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                //Getting simulation value
+                simulation = realRunCheck.isSelected();
+                //Setting Way Point
+                //_waypointX = (int) spinnerX.getValue();
+                //_waypointY = (int) spinnerY.getValue();
+                //CardLayout cl = ((CardLayout) arenaPanel.getLayout());
+                //cl.show(arenaPanel, "Fastest Path");
+                //arenaView.calculateSpaceClearance();
+                //arenaView.repaint();
+                new ImageRecognitionExplore().execute();
+            }
+        });
+
 
         //Exploration Multi-Threading
         class ExplorationSimulator extends SwingWorker<Integer, String> {
@@ -524,6 +554,7 @@ public class SimulatorGUI {
         buttonPanel.add(loadMap);
         buttonPanel.add(createArena);
         buttonPanel.add(fastestPath);
+        buttonPanel.add(imageRecButton);
         //buttonPanel.add(timeLimited);
         //buttonPanel.add(coverageLimited);
         buttonPanel.add(explorationButton);

@@ -7,16 +7,15 @@ package navigation;
 
 import arena.ArenaView;
 import arena.GridBox;
-import java.io.PrintStream;
-import java.sql.SQLOutput;
-import java.util.Stack;
-
 import robot.Command;
 import view.SimulatorGUI;
 
+import java.io.PrintStream;
+import java.util.Stack;
+
 import static view.SimulatorGUI.arenaView;
 
-public class Exploration {
+public class ImageRecognition {
     private final int coverageLimit;
     private final int timeLimit;
     private int areaExplored;
@@ -27,14 +26,15 @@ public class Exploration {
     private boolean realRun;
     private Command previousCommand;
     private boolean firstRun;
-    public Exploration(int coverageLimit, int timeLimit, boolean realRun) {
+
+    public ImageRecognition(int coverageLimit, int timeLimit, boolean realRun) {
         this.coverageLimit = coverageLimit;
         this.timeLimit = timeLimit;
         this.realRun = realRun;
         this.firstRun = true;
     }
 
-    public void runExploration() {
+    public void runImageRecognitionExploration() {
         if (this.realRun) {
             System.out.println("Calibrated, Starting Exploration...");
         }
@@ -88,7 +88,7 @@ public class Exploration {
                     break;
                 }
             }
-            else if (arenaView.gridArray[arenaView.robot.getCurrPosY()][arenaView.robot.getCurrPosX()].getEnteredCount() >= 4) break;
+            else if (arenaView.gridArray[arenaView.robot.getCurrPosY()][arenaView.robot.getCurrPosX()].getEnteredCount() >= 2) break;
         } while(this.areaExplored < this.coverageLimit && System.currentTimeMillis() <= this.endTime);
 
     }
@@ -99,15 +99,14 @@ public class Exploration {
         System.out.println("Current Gridbox X: "+ currentGridBox.getX() + " Y:"+currentGridBox.getY());
         GridBox gridNextToUnExplored = findGridNextToUnexploredCell();//arenaView.gridArray[findGridNextToUnexploredCell().getY()][findGridNextToUnexploredCell().getX()];
         System.out.println("Nearest Grid Unxplored X: " + gridNextToUnExplored.getX() + " Y:" + gridNextToUnExplored.getY());
-        navigation.FastestPath fp1 = new navigation.FastestPath(currentGridBox, gridNextToUnExplored);
-        navigation.FastestPath fp2 = null;
+        FastestPath fp1 = new FastestPath(currentGridBox, gridNextToUnExplored);
+        FastestPath fp2 = null;
         arenaView.robot.simulateFastestPath(fp1.findFastestPath(),new Stack<GridBox>());
         System.out.println("Fastest Path to Unexplored Completed");
     }
 
     private GridBox findGridNextToUnexploredCell(){
         System.out.println("Start findGridNextToUnexploredCell");
-        arenaView.gridsClearEnteredCount();
         int rowDifference;
         int colDifference;
         //Calculate Robot's position and determine where to look first
@@ -157,11 +156,11 @@ public class Exploration {
 
     private void decideOnNextMove() {
         //code for image recognition
-//        if (this.previousCommand != Command.TURN180 && lookRight()){
-//            this.previousCommand = Command.TURN180;
-//            this.moveBot(Command.TURN180);
-//        }
-        if (this.previousCommand == Command.LEFT && this.lookForward()) {
+        if (this.previousCommand != Command.TURN180 && lookFarRight()){
+            this.previousCommand = Command.TURN180;
+            this.moveBot(Command.TURN180);
+        }
+        else if (this.previousCommand == Command.LEFT && this.lookForward()) {
             this.moveBot(Command.FORWARD);
             this.previousCommand = Command.FORWARD;
         } else if (this.lookLeft()) {

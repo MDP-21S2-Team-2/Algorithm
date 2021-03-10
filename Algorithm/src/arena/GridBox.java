@@ -26,6 +26,8 @@ public class GridBox implements Comparable {
     private float costAccumulatedFromStart;
     private float costEstimatedToGoal;
 
+    private int enteredCount = 0;
+
     public GridBox(Location location, boolean isObstacle) {
         this.location = location;
         this.isObstacle = isObstacle;
@@ -216,5 +218,12 @@ public class GridBox implements Comparable {
 
     public void setExplored(boolean explored) {
         this.isExplored = explored;
+    }
+    public int getEnteredCount() {
+        return enteredCount;
+    }
+
+    public void setEnteredCount(int enteredCount) {
+        this.enteredCount = enteredCount;
     }
 }

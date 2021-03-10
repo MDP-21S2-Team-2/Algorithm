@@ -30,7 +30,7 @@ public class  Sensor {
         switch (range){
             case SHORT:
                 this.lowerLimit = 1;
-                this.upperLimit = 3;
+                this.upperLimit = 2;
                 break;
             case LONG:
                 this.lowerLimit = 1;
@@ -112,7 +112,7 @@ public class  Sensor {
 
             arenaView.setExploredGrids(row,col);
             if (arenaView.isSimulatedObstacle(row,col)) {
-                arenaView.setIsObstacleGrids(row,col);
+                arenaView.setIsObstacleGrids(row,col,true);
                 return true;
             }
         }
@@ -179,13 +179,13 @@ public class  Sensor {
             arenaView.setExploredGrids(row,col);
 
             if (sensorValue == i) {
-                arenaView.setIsObstacleGrids(row, col);
+                arenaView.setIsObstacleGrids(row, col,true);
                 break;
             }
             // Override previous obstacle value if front sensors detect no obstacle.
             if (arenaView.getGrid(row, col).isObstacle()) {
-                if (location.equals(0) || location.equals(1) || location.equals(2)) {
-                    arenaView.setIsObstacleGrids(row, col);
+                if (location.equals(0) || location.equals(1) || location.equals(2) ||location.equals(3) || location.equals(4)) {
+                    arenaView.setIsObstacleGrids(row, col,false);
                 } else {
                     break;
                 }

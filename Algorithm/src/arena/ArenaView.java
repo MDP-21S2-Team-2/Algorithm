@@ -29,12 +29,18 @@ public class ArenaView extends JPanel {
 
     public ArenaView() {
         this.setBackground(Color.WHITE);
-        this.setPreferredSize(new Dimension(ArenaConstants.FRAME_WIDTH, ArenaConstants.PANEL_HEIGHT + 25));
-        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+        this.setPreferredSize(new Dimension(ArenaConstants.PANEL_WIDTH, ArenaConstants.PANEL_HEIGHT + 25));
+        //this.setLayout(new FlowLayout(FlowLayout.CENTER));
         this.calculateDimension();
         this.fillGridBoxes();
         //this.createObstacles();
         System.out.println("finished creating grid box");
+    }
+
+    public void paint(Graphics g) {
+        //this.paintGridBoxs(g);
+        this.paintGridBoxsExploration(g);
+        this.paintRobot(g);
     }
 
     public void generateRandomObstacles(int numObstacles) {
@@ -118,9 +124,9 @@ public class ArenaView extends JPanel {
         return obstacleGrids[row][col] == 1;
     }
 
-    public void setIsObstacleGrids(int row, int col) {
+    public void setIsObstacleGrids(int row, int col, boolean isObstacle) {
         obstacleGrids[row][col] = 1;
-        gridArray[row][col].setObstacle(true);
+        gridArray[row][col].setObstacle(isObstacle);
     }
 
     public boolean isSimulatedObstacle(int row, int col) {
@@ -183,10 +189,48 @@ public class ArenaView extends JPanel {
         return true;
     }
 
-    public void paint(Graphics g) {
-        this.paintGridBoxs(g);
-        this.paintRobot(g);
+    public void gridsClearEnteredCount(){
+        for(int y = 0; y < ArenaConstants.NUM_ROWS; ++y) {
+            for(int x = 0; x < ArenaConstants.NUM_COLS; ++x) {
+                gridArray[y][x].setEnteredCount(0);
+            }
+        }
     }
+
+
+    private void paintGridBoxsExploration (Graphics g){
+        this.robotMovement();
+        Graphics2D g2 = (Graphics2D)g;
+
+        for(int y = 0; y < ArenaConstants.NUM_ROWS; ++y) {
+            for(int x = 0; x < ArenaConstants.NUM_COLS; ++x) {
+                int x1 = x * this.gridWidth;
+                int y1 = y * this.gridHeight;
+                g2.setColor(Color.decode("#e6e6fa"));
+                if (gridArray[y][x].isExplored()) {
+                    g2.setColor(Color.decode("#B491C8"));
+                    g2.fillRect(x1, y1, this.gridWidth, this.gridHeight);
+                    if (gridArray[y][x].isObstacle()) {
+                        g2.setColor(Color.BLACK);
+                    }
+                }
+
+                if (this.isInStartPoint(x, y)) {
+                    g2.setColor(Color.decode("#40E0D0"));
+                }
+
+                if (this.isInGoalPoint(x, y)) {
+                    g2.setColor(Color.decode("#F7347A"));
+                }
+
+                g2.fillRect(x1, y1, this.gridWidth, this.gridHeight);
+                g2.setColor(Color.white);
+                g2.drawRect(x1, y1, this.gridWidth, this.gridHeight);
+                g2.setStroke(new BasicStroke(4.0F));
+            }
+        }
+    }
+
 
     private void paintGridBoxs(Graphics g) {
         this.robotMovement();

@@ -45,7 +45,7 @@ public class Robot {
         if (command == Command.FORWARD) {
             move(command,1);
             if (realRun)
-                tcp.sendPacket(SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + 0);
+                tcp.sendPacket(SEND_ARDUINO + SEPARATOR + MOVE_FORWARD_E + 0);
                 //tcp.receiveBytesArduino();
                 //sendArduinoMultipleForward(1,100);
         }
@@ -80,6 +80,7 @@ public class Robot {
                 currPosX -= s;
                 break;
         }
+        arenaView.gridArray[currPosY][currPosX].setEnteredCount(arenaView.gridArray[currPosY][currPosX].getEnteredCount()+1);
         arenaView.repaint();
     }
 
@@ -163,12 +164,26 @@ public class Robot {
     public void simulateFastestPath(Stack<GridBox> path1, Stack<GridBox> path2 ){
         arenaView.generateFastestPathObstacles();
         arenaView.repaint();
+        System.out.println("Simulating fastestPath");
         while (!path1.empty() ||!path2.empty() ){
             GridBox grid;
             if (!path1.empty())
                 grid = path1.pop();
             else
                 grid = path2.pop();
+
+            int x = grid.getX();
+            int y = grid.getY();
+            arenaView.gridArray[y][x].setExplored(true);
+
+            for(int i = y - 1; i <= y + 1; ++i) {
+                for(int j = x - 1; j <= x + 1; ++j) {
+                    if (i < 20 && i >= 0 && j < 15 && j >= 0) {
+                        arenaView.gridArray[i][j].setExplored(true);
+                    }
+                }
+            }
+
             try{
                 Thread.sleep(100);
                 if (grid.getX() > currPosX){
@@ -233,12 +248,168 @@ public class Robot {
         }
     }
 
+    public void simulateFastestPathCommands(Stack<GridBox> path1, Stack<GridBox> path2 ){
+        {
+            int delay = 0;
+            String outputPacket;
+            int forwardCount = 0;
+            boolean firstMove = true;
+            Stack <String> commands = new Stack<>();
+
+            while (!path1.isEmpty()||!path2.empty()){
+                GridBox grid;
+                if (!path1.empty())
+                    grid = path1.pop();
+                else
+                    grid = path2.pop();
+
+
+                if (grid.getX() > currPosX){
+                    while(facingDirection != Direction.EAST) {
+                        System.out.println(forwardCount);
+                        if (forwardCount>0 && firstMove){
+                            commands.push(returnForwardMethodArduino(forwardCount));
+                            forwardCount = 0;
+                            firstMove = false;
+                        }
+
+                        //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+                        if (facingDirection != Direction.SOUTH) {
+                            this.rotate(Command.RIGHT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                            commands.push(outputPacket);
+
+                        } else{
+                            this.rotate(Command.LEFT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                            commands.push(outputPacket);
+
+                        }
+                    }
+                    move(Command.FORWARD,1);
+                    forwardCount += 1;
+                    firstMove = true;
+                }
+                else if (grid.getX()<currPosX){
+
+                    while(facingDirection != Direction.WEST) {
+                        if (forwardCount>0 && firstMove){
+                            commands.push(returnForwardMethodArduino(forwardCount));
+                            forwardCount =0;
+                            firstMove = false;
+                        }
+                        if (facingDirection != Direction.SOUTH) {
+                            this.rotate(Command.LEFT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                            commands.push(outputPacket);
+
+                        } else{
+                            this.rotate(Command.RIGHT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                            commands.push(outputPacket);
+
+                        }
+                    }
+                    move(Command.FORWARD,1);
+                    forwardCount += 1;
+                    firstMove = true;
+                    //outputPacket = SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + "1";
+                }
+                else if (grid.getY()<currPosY) {
+                    while (facingDirection != Direction.NORTH) {
+                        if (forwardCount > 0 && firstMove) {
+                            commands.push(returnForwardMethodArduino(forwardCount));
+                            firstMove = false;
+                            forwardCount = 0;
+                        }
+                        if (facingDirection != Direction.WEST) {
+                            this.rotate(Command.LEFT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                            commands.push(outputPacket);
+
+                        } else {
+                            this.rotate(Command.RIGHT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                            commands.push(outputPacket);
+
+                        }
+                        move(Command.FORWARD, 1);
+                        forwardCount += 1;
+                        firstMove = true;
+                        System.out.println("Forward count increased");
+                    }
+                }
+                else {
+                    while(facingDirection != Direction.SOUTH) {
+                        if (forwardCount>0 && firstMove){
+                            commands.push(returnForwardMethodArduino(forwardCount));
+                            firstMove = false;
+                            forwardCount =0;
+                        }
+                        //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+
+                        if (facingDirection != Direction.EAST) {
+                            this.rotate(Command.LEFT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                            commands.push(outputPacket);
+
+                        } else{
+                            this.rotate(Command.RIGHT);
+                            outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                            commands.push(outputPacket);
+                        }
+
+                    }
+                    move(Command.FORWARD,1);
+                    forwardCount += 1;
+                    firstMove = true;
+                }
+
+            }
+            if (forwardCount>0){
+                commands.push(returnForwardMethodArduino(forwardCount));
+            }
+            Stack <String> reverseCommands = new Stack();
+            for (int i=0; i< commands.size(); i++){
+                if (i==0|i==2){
+                    String replaceString;
+                    String toPush;
+                    String toPushFinal;
+                    replaceString = commands.pop();
+                    toPush = replaceString.replace("M","E");
+                    toPushFinal = toPush.replace("F","D");
+                    reverseCommands.push(toPushFinal);
+                }
+                reverseCommands.push(commands.pop());
+            }
+            for (int i=0;i<reverseCommands.size();i++){
+                try{
+                    Thread.sleep(delay);
+                    System.out.println(reverseCommands.pop());
+                    //tcp.sendPacket(reverseCommands.pop());
+                    //tcp.receivePacket();
+                }catch (InterruptedException e){
+                    e.printStackTrace();}
+                try{
+                    Thread.sleep(delay);
+                    //tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+                    //tcp.receivePacket();
+                }catch (InterruptedException e){
+                    e.printStackTrace();}
+                arenaView.repaint();
+            }
+
+        }
+
+    }
+
     public void executeFastestPath(Stack<GridBox> path1, Stack<GridBox> path2 )  {
         int delay = 0;
 //        tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
 //        tcp.receivePacket();
         String outputPacket;
         int forwardCount = 0;
+        boolean lastMove = false;
 
         while (!path1.isEmpty()||!path2.empty()){
                 GridBox grid;
@@ -247,10 +418,29 @@ public class Robot {
                 else
                     grid = path2.pop();
 
+                if (!path2.empty()){
+                    if (path2.size() < 2){
+                        lastMove = true;
+                    }
+                }
+
+                int x = grid.getX();
+                int y = grid.getY();
+                arenaView.gridArray[y][x].setExplored(true);
+
+                for(int i = y - 1; i <= y + 1; ++i) {
+                    for(int j = x - 1; j <= x + 1; ++j) {
+                        if (i < 20 && i >= 0 && j < 15 && j >= 0) {
+                            arenaView.gridArray[i][j].setExplored(true);
+                        }
+                    }
+                }
+
                 if (grid.getX() > currPosX){
                     while(facingDirection != Direction.EAST) {
                         System.out.println(forwardCount);
-                        forwardCount = sendArduinoMultipleForward(forwardCount,delay);
+
+                        forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
                         if (facingDirection != Direction.SOUTH) {
                             this.rotate(Command.RIGHT);
                             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
@@ -277,7 +467,7 @@ public class Robot {
                 }
                 else if (grid.getX()<currPosX){
                     while(facingDirection != Direction.WEST) {
-                        forwardCount = sendArduinoMultipleForward(forwardCount,delay);
+                        forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
                         if (facingDirection != Direction.SOUTH) {
                             this.rotate(Command.LEFT);
                             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
@@ -302,7 +492,7 @@ public class Robot {
                 }
                 else if (grid.getY()<currPosY){
                     while(facingDirection != Direction.NORTH) {
-                        forwardCount = sendArduinoMultipleForward(forwardCount,delay);
+                        forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
                         if (facingDirection != Direction.WEST) {
                             this.rotate(Command.LEFT);
                             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
@@ -328,7 +518,7 @@ public class Robot {
                 }
                 else {
                     while(facingDirection != Direction.SOUTH) {
-                        forwardCount = sendArduinoMultipleForward(forwardCount,delay);
+                        forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
                         if (facingDirection != Direction.EAST) {
                             this.rotate(Command.LEFT);
                             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
@@ -367,7 +557,7 @@ public class Robot {
 //                }catch (InterruptedException e){
 //                e.printStackTrace();}
         }
-        sendArduinoMultipleForward(forwardCount,delay);
+        sendArduinoMultipleForward(forwardCount,delay, true);
 //        try{
 //                Thread.sleep(delay);
 //                tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
@@ -409,13 +599,224 @@ public class Robot {
 //        outputPacket = SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + "3";
     }
 
-    public int sendArduinoMultipleForward (int forwardCount, int delay){
+    public void executeFastestPathCommands (Stack<GridBox> path1, Stack<GridBox> path2 )  {
+        int delay = 0;
+        String outputPacket;
+        int forwardCount = 0;
+        boolean firstMove = true;
+        Stack <String> commands = new Stack<>();
+
+        while (!path1.isEmpty()||!path2.empty()){
+            GridBox grid;
+            if (!path1.empty())
+                grid = path1.pop();
+            else
+                grid = path2.pop();
+
+
+            if (grid.getX() > currPosX){
+                while(facingDirection != Direction.EAST) {
+                    System.out.println(forwardCount);
+                    if (forwardCount>0 && firstMove){
+                        commands.push(returnForwardMethodArduino(forwardCount-1));
+                        forwardCount = 0;
+                        firstMove = false;
+                    }
+
+                    //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+                    if (facingDirection != Direction.SOUTH) {
+                        this.rotate(Command.RIGHT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                        commands.push(outputPacket);
+
+                    } else{
+                        this.rotate(Command.LEFT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                        commands.push(outputPacket);
+
+                    }
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.sendPacket(outputPacket);
+//                        tcp.receivePacket();
+//                    }catch (InterruptedException e){
+//                        e.printStackTrace();
+//                    }
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+//                        tcp.receivePacket();}catch (InterruptedException e){
+//                        e.printStackTrace();}
+                }
+                move(Command.FORWARD,1);
+                forwardCount += 1;
+                firstMove = true;
+            }
+            else if (grid.getX()<currPosX){
+
+                while(facingDirection != Direction.WEST) {
+                    if (forwardCount>0 && firstMove){
+                        commands.push(returnForwardMethodArduino(forwardCount-1));
+                        forwardCount =0;
+                        firstMove = false;
+                    }
+                    //commands.push(Integer.toString(forwardCount));
+                    //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+                    if (facingDirection != Direction.SOUTH) {
+                        this.rotate(Command.LEFT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                        commands.push(outputPacket);
+
+                    } else{
+                        this.rotate(Command.RIGHT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                        commands.push(outputPacket);
+
+                    }
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.sendPacket(outputPacket);
+//                        tcp.receivePacket();}catch (InterruptedException e){
+//                        e.printStackTrace();}
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+//                        tcp.receivePacket();}catch (InterruptedException e){
+//                        e.printStackTrace();}
+                }
+                move(Command.FORWARD,1);
+                forwardCount += 1;
+                firstMove = true;
+                //outputPacket = SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + "1";
+            }
+            else if (grid.getY()<currPosY){
+                while(facingDirection != Direction.NORTH) {
+                    if (forwardCount>0 && firstMove){
+                        commands.push(returnForwardMethodArduino(forwardCount-1));
+                        firstMove = false;
+                        forwardCount =0;
+                    }
+                    //commands.push(Integer.toString(forwardCount));
+                    //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+                    if (facingDirection != Direction.WEST) {
+                        this.rotate(Command.LEFT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                        commands.push(outputPacket);
+
+                    } else{
+                        this.rotate(Command.RIGHT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                        commands.push(outputPacket);
+
+                    }
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.sendPacket(outputPacket);
+//                        tcp.receivePacket();;}catch (InterruptedException e){
+//                        e.printStackTrace();}
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+//                        tcp.receivePacket();}catch (InterruptedException e){
+//                        e.printStackTrace();}
+                }
+                move(Command.FORWARD,1);
+                forwardCount += 1;
+                firstMove = true;
+                System.out.println("Forward count increased");
+            }
+            else {
+                while(facingDirection != Direction.SOUTH) {
+                    if (forwardCount>0 && firstMove){
+                        commands.push(returnForwardMethodArduino(forwardCount-1));
+                        firstMove = false;
+                        forwardCount =0;
+                    }
+                    //forwardCount = sendArduinoMultipleForward(forwardCount,delay, lastMove);
+
+                    if (facingDirection != Direction.EAST) {
+                        this.rotate(Command.LEFT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
+                        commands.push(outputPacket);
+
+                    } else{
+                        this.rotate(Command.RIGHT);
+                        outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
+                        commands.push(outputPacket);
+                    }
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.sendPacket(outputPacket);
+//                        tcp.receivePacket();
+//                    }catch (InterruptedException e){
+//                        e.printStackTrace();}
+//                    try{
+//                        Thread.sleep(delay);
+//                        tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+//                        tcp.receivePacket();}catch (InterruptedException e){
+//                        e.printStackTrace();}
+
+                }
+                move(Command.FORWARD,1);
+                forwardCount += 1;
+                firstMove = true;
+            }
+
+        }
+        if (forwardCount>0){
+            commands.push(returnForwardMethodArduino(forwardCount-1));
+        }
+        Stack <String> reverseCommands = new Stack();
+        for (int i=0; i< commands.size(); i++){
+            if (i==0|i==2){
+                String replaceString;
+                String toPush;
+                String toPushFinal;
+                replaceString = commands.pop();
+                toPush = replaceString.replace("M","E");
+                toPushFinal = toPush.replace("F","D");
+                reverseCommands.push(toPushFinal);
+            }
+            reverseCommands.push(commands.pop());
+        }
+        for (int i=0;i<reverseCommands.size();i++){
+            try{
+                Thread.sleep(delay);
+                tcp.sendPacket(reverseCommands.pop());
+                tcp.receivePacket();
+            }catch (InterruptedException e){
+                e.printStackTrace();}
+            try{
+                Thread.sleep(delay);
+                tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());
+                tcp.receivePacket();
+            }catch (InterruptedException e){
+                e.printStackTrace();}
+            arenaView.repaint();
+        }
+
+        }
+
+        //sendArduinoMultipleForward(forwardCount,delay, true);
+
+
+    public String returnForwardMethodArduino (int forwardCount) {
+        String outputPacket;
+            if (forwardCount <= 10)
+                outputPacket = SEND_ARDUINO + SEPARATOR +  MOVE_FORWARD + (forwardCount - 1);
+            else
+                outputPacket = SEND_ARDUINO + SEPARATOR +  "F" + (forwardCount % 10 - 1);
+
+        return outputPacket;
+    }
+
+    public int sendArduinoMultipleForward (int forwardCount, int delay, boolean lastMove){
         if (forwardCount >= 1){
             String outputPacket;
             if (forwardCount <= 10)
-                outputPacket = SEND_ARDUINO + SEPARATOR + MOVE_FORWARD + (forwardCount-1);
+                outputPacket = SEND_ARDUINO + SEPARATOR + (lastMove==true ? "E": MOVE_FORWARD) + (forwardCount-1);
             else
-                outputPacket = SEND_ARDUINO + SEPARATOR + "F" + (forwardCount%10-1);
+                outputPacket = SEND_ARDUINO + SEPARATOR + (lastMove==true ? "D": "F") + (forwardCount%10-1);
             try{
                 Thread.sleep(delay);
                 tcp.sendPacket(outputPacket);
@@ -461,22 +862,23 @@ public class Robot {
     }
 
     public void expSendArduinoRotate(Command command, int delay) {
-        String outputPacket;
+        String outputPacket = "";
         if (command == Command.RIGHT) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_RIGHT;
-        }
-        else if (command == Command.LEFT){
+        } else if (command == Command.LEFT) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_LEFT;
-        }
-        else {
+        } else if (command == Command.TURN180) {
             outputPacket = SEND_ARDUINO + SEPARATOR + ROTATE_180;
         }
-        try{
-            Thread.sleep(delay);
-            tcp.sendPacket(outputPacket);
-            //tcp.receiveBytesArduino();
-        }catch (InterruptedException e){
-            e.printStackTrace();}
+        if (outputPacket != ""){
+            try {
+                Thread.sleep(delay);
+                tcp.sendPacket(outputPacket);
+                //tcp.receiveBytesArduino();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 //        try{
 //            Thread.sleep(delay);
 //            tcp.updateAndroid("RUNNING",this.getFacingDirection(),this.getCurrPosY(),this.getCurrPosX());

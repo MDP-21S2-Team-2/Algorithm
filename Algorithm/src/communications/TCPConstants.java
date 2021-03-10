@@ -28,6 +28,7 @@ public class TCPConstants {
     public static final String FACING_EAST = "90";
     public static final String FACING_WEST = "270";
     public static final String MOVE_FORWARD = "M";
+    public static final String MOVE_FORWARD_E = "E";
     public static final String ROTATE_LEFT = "L";
     public static final String ROTATE_RIGHT = "R";
     public static final String ROTATE_180 = "B";
@@ -35,6 +36,10 @@ public class TCPConstants {
     public static final String SNAP_PHOTO = "SNAP";
     public static final String IR_SENSORS = "IR";
     public static final String INITIAL_CALIBRATE = "C";
+    public static final String ENABLE_ALIGNMENT = "a";
+    public static final String DISABLE_ALIGNMENT = "b";
+    public static final String ENABLE_E_BRAKES = "e";
+    public static final String DISABLE_E_BRAKES = "f";
     public static final String UPDATEMAP_ANDROID = "UPDATE";
 
     public TCPConstants() {
